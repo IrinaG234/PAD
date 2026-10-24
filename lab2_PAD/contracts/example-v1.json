@@ -1,0 +1,8 @@
+{
+  "messageId": "d10b8752-7ed5-463a-a52a-59809a42dc5b",
+  "correlationId": "632bca2d-a7d7-4422-b753-cb2977627153",
+  "messageType": "TextPublished",
+  "schemaVersion": 1,
+  "occurredAt": "2026-10-14T12:00:00Z",
+  "payload": {"text": "Comanda 15"}
+}

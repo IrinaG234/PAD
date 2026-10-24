@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.sqlite3*
+broker_state.json
+broker_state.json.tmp
+*.log.jsonl
+backup_*/
+livrare/
+*.zip
+
+.venv/

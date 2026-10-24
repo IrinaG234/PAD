@@ -1,0 +1,62 @@
+syntax = "proto3";
+package pad.lab2.v1;
+
+import "google/protobuf/struct.proto";
+
+enum Role { ROLE_UNSPECIFIED = 0; PUBLISHER = 1; SUBSCRIBER = 2; }
+message Empty {}
+message TextPayload {
+  string text = 1;
+  google.protobuf.Struct extensions = 2;
+}
+message Message {
+  string message_id = 1;
+  string correlation_id = 2;
+  string message_type = 3;
+  uint32 schema_version = 4;
+  string occurred_at = 5;
+  TextPayload payload = 6;
+  google.protobuf.Struct extensions = 7;
+  string subject = 8;
+}
+message RegisterRequest { Role role = 1; string name = 2; }
+message RegisterReply { string session_id = 1; }
+message Session { string session_id = 1; }
+message PublishRequest { string session_id = 1; Message message = 2; }
+message PublishReply { string message_id = 1; uint32 recipients = 2; }
+message FollowRequest { string session_id = 1; string publisher = 2 [deprecated=true]; string subject = 3; bool load_history = 4; }
+message Confirmation {
+  string session_id = 1;
+  string message_id = 2;
+  bool transient = 3;
+}
+message Reply { string detail = 1; }
+message StatusReply { string publisher = 1; uint32 pending = 2; bool online = 3; string subject = 4; }
+message Delivery {
+  Message message = 1;
+  string publisher = 2;
+  uint64 sequence = 3;
+  uint32 attempt = 4;
+  bool heartbeat = 5;
+  bool historical = 6;
+}
+message HealthReply { bool live = 1; bool ready = 2; string storage = 3; }
+
+message SubscribeRequest { string session_id = 1; string subject = 2; bool load_history = 3; }
+message TopicsReply { repeated string subjects = 1; }
+
+service MessageBroker {
+  rpc PublishMessage(PublishRequest) returns (PublishReply);
+  rpc Subscribe(SubscribeRequest) returns (stream Delivery);
+  rpc ListTopics(Empty) returns (TopicsReply);
+  rpc Register(RegisterRequest) returns (RegisterReply);
+  rpc Watch(Session) returns (stream Delivery);
+  rpc Publish(PublishRequest) returns (PublishReply);
+  rpc Follow(FollowRequest) returns (Reply);
+  rpc Unsubscribe(Session) returns (Reply);
+  rpc Ack(Confirmation) returns (Reply);
+  rpc Nack(Confirmation) returns (Reply);
+  rpc Status(Session) returns (StatusReply);
+  rpc Disconnect(Session) returns (Reply);
+  rpc Health(Empty) returns (HealthReply);
+}
