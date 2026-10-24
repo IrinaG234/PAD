@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TextPublished version 1",
+  "type": "object",
+  "required": ["messageId", "correlationId", "messageType", "schemaVersion", "occurredAt", "payload"],
+  "properties": {
+    "messageId": {"type": "string", "format": "uuid"},
+    "correlationId": {"type": "string", "format": "uuid"},
+    "messageType": {"const": "TextPublished"},
+    "schemaVersion": {"const": 1},
+    "occurredAt": {"type": "string", "format": "date-time", "pattern": "(Z|\\+00:00)$"},
+    "payload": {
+      "type": "object",
+      "required": ["text"],
+      "properties": {"text": {"type": "string", "minLength": 1, "maxLength": 10000, "pattern": "\\S"}},
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
